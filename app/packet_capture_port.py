@@ -3,7 +3,7 @@ import csv
 from datetime import datetime
 import os
 
-CSV_FILE = "network_log.csv"
+CSV_FILE = "portscan_log.csv"
 
 # Create CSV file with headers if it doesn't exist
 if not os.path.exists(CSV_FILE):
@@ -26,7 +26,7 @@ def packet_callback(packet):
     if IP not in packet:
         return
 
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
 
     src_ip = packet[IP].src
     dst_ip = packet[IP].dst
@@ -79,4 +79,4 @@ def packet_callback(packet):
         ])
 
 print("Starting packet capture...")
-sniff(prn=packet_callback, store=False)
+sniff(iface="lo0", prn=packet_callback, store=False)

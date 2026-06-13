@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv("network_log.csv")
+df = pd.read_csv("portscan_log.csv")
 
 print("Total Packets:", len(df))
 

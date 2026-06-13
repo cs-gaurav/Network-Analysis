@@ -1,6 +1,7 @@
+#ports contacte by this ip address
 import pandas as pd
 
-df = pd.read_csv("network_log.csv")
+df = pd.read_csv("portscan_log.csv")
 
 ip = "57.144.49.32"
 
