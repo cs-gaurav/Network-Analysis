@@ -1,1 +1,2 @@
-dataset/*.csv
+dataset/normal_log.csv
+dataset/portscan_log.csv
