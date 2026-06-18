@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Network Security Dashboard</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>
+            Network Traffic Monitoring &
+            Attack Detection Dashboard
+        </h1>
+
+        <div class="cards">
+            <div class="card">
+                <h3>Total Packets</h3>
+                <h2>{{ total_packets }}</h2>
+            </div>
+
+            <div class="card">
+                <h3>Source IPs</h3>
+                <h2>{{ source_ips }}</h2>
+            </div>
+
+            <div class="card">
+                <h3>Destination IPs</h3>
+                <h2>{{ dest_ips }}</h2>
+            </div>
+
+            <div class="card">
+                <h3>Total Alerts</h3>
+                <h2>{{ total_alerts }}</h2>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Recent Alerts</h2>
+            <table>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Attack Type</th>
+                    <th>Source IP</th>
+                    <th>Severity</th>
+                </tr>
+
+                {% for row in alerts %}
+
+                <tr>
+
+                    <td>{{ row.Timestamp }}</td>
+
+                    <td>{{ row.Attack_Type }}</td>
+
+                    <td>{{ row.Source_IP }}</td>
+
+                    <td>{{ row.Severity }}</td>
+
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="charts">
+            <div class="chart-box">
+                <h2>Attack Distribution</h2>
+                <canvas id="attackChart"></canvas>
+            </div>
+
+            <div class="chart-box">
+                <h2>Protocol Distribution</h2>
+                <canvas id="protocolChart"></canvas>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Top Suspicious IPs</h2>
+            <table>
+                <tr>
+                    <th>IP Address</th>
+                    <th>Count</th>
+                </tr>
+
+                {% for ip,count in top_ips.items() %}
+
+                <tr>
+                    <td>{{ ip }}</td>
+                    <td>{{ count }}</td>
+                </tr>
+
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+
+        new Chart(
+            document.getElementById("attackChart"),
+            {
+                type: "bar",
+                data: {
+                    labels: [
+                        "Port Scan",
+                        "Brute Force"
+                    ],
+                    datasets: [{
+                        data: [
+                            {{ portscan_count }},
+                            {{ bruteforce_count }}
+                        ]
+                    }]
+                }
+            }
+        );
+
+        new Chart(
+            document.getElementById("protocolChart"),
+            {
+                type: "pie",
+                data: {
+                    labels: [
+                        "TCP",
+                        "UDP",
+                        "ICMP"
+                    ],
+                    datasets: [{
+                        data: [
+                            {{ tcp_count }},
+                            {{ udp_count }},
+                            {{ icmp_count }}
+                        ]
+                    }]
+                }
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>

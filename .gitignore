@@ -1,2 +1,4 @@
 dataset/normal_log.csv
 dataset/portscan_log.csv
+dataset/login_attempts.csv
+dataset/alerts.csv
