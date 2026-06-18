@@ -1,4 +1,1 @@
-src/dataset/normal_log.csv
-src/dataset/portscan_log.csv
-src/dataset/login_attempts.csv
-src/dataset/alerts.csv
+src/dataset/*.csv
