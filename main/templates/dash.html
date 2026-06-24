@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Network Security Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <div class="heading">
+        <h1>Real-Time Traffic Monitoring & Threat Detection</h1>
+    </div>
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>Packets Observed</h3>
+            <h2 id="total_packets">0</h2>
+        </div>
+
+        <div class="card">
+            <h3>Unique Source IPs</h3>
+            <h2 id="source_ips">0</h2>
+        </div>
+
+        <div class="card">
+            <h3>Unique Destination IPs</h3>
+            <h2 id="dest_ips">0</h2>
+        </div>
+
+    </div>
+
+    <h2 class="alert">Alerts</h2>
+
+    <table id="alerts_table">
+        <thead>
+            <tr>
+                <th>Attack Type</th>
+                <th>Source IP</th>
+                <th>Ports Scanned</th>
+                <th>Severity</th>
+                <th>First Detected</th>
+                <th>Last Detected</th>
+            </tr>
+        </thead>
+
+        <tbody></tbody>
+    </table>
+
+    <script>
+
+    async function loadStats(){
+
+        const response =
+            await fetch("/api/stats");
+
+        const data =
+            await response.json();
+
+        document.getElementById(
+            "total_packets"
+        ).innerText =
+            data.total_packets;
+
+        document.getElementById(
+            "source_ips"
+        ).innerText =
+            data.source_ips;
+
+        document.getElementById(
+            "dest_ips"
+        ).innerText =
+            data.dest_ips;
+
+        const tbody =
+            document.querySelector(
+                "#alerts_table tbody"
+            );
+
+        tbody.innerHTML = "";
+
+        data.alerts.forEach(alert => {
+
+            tbody.innerHTML += `
+            <tr>
+                <td>${alert.attack_type}</td>
+                <td>${alert.source_ip}</td>
+                <td>${alert.count}</td>
+                <td>${alert.severity}</td>
+                <td>${alert.first_seen}</td>
+                <td>${alert.last_seen}</td>
+            </tr>`;
+        });
+    }
+
+    loadStats();
+
+    setInterval(
+        loadStats,
+        1000
+    );
+
+    </script>
+
+</body>
+</html>

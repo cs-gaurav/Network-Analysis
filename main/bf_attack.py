@@ -1,7 +1,5 @@
 import requests
-
-url = "http://127.0.0.1:5000"
-
+url = "http://127.0.0.1:8000"
 for i in range(15):
     requests.post(
         url,
@@ -10,5 +8,4 @@ for i in range(15):
             "password": f"wrong{i}"
         }
     )
-
-print("Attack completed")
+print("Brute Force Initialized!")
