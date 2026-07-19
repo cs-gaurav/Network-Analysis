@@ -1,105 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Network Security Dashboard</title>
+    <meta charset="UTF-8">
+    <title>Network IDS Dashboard</title>
     <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
+    <header>
+        <div>
+            <h1>Network Intrusion Detection System</h1>
+            <p>Real-Time Traffic Monitoring & Threat Detection</p>
+        </div>
 
-    <div class="heading">
-        <h1>Real-Time Traffic Monitoring & Threat Detection</h1>
-    </div>
+        <div class="live">
+            <span class="dot"></span>
+            <span>LIVE</span>
+            <div id="clock"></div>
+        </div>
+    </header>
 
-    <div class="cards">
-
+    <section class="cards">
         <div class="card">
             <h3>Packets Observed</h3>
             <h2 id="total_packets">0</h2>
         </div>
 
         <div class="card">
-            <h3>Unique Source IPs</h3>
+            <h3>Source IPs</h3>
             <h2 id="source_ips">0</h2>
         </div>
 
         <div class="card">
-            <h3>Unique Destination IPs</h3>
+            <h3>Destination IPs</h3>
             <h2 id="dest_ips">0</h2>
         </div>
+    </section>
 
-    </div>
+    <section class="table-section">
+        <div class="table-header">
+            <h2>Threat Alerts</h2>
+        </div>
 
-    <h2 class="alert">Alerts</h2>
-
-    <table id="alerts_table">
-        <thead>
-            <tr>
-                <th>Attack Type</th>
-                <th>Source IP</th>
-                <th>Ports Scanned</th>
-                <th>Severity</th>
-                <th>First Detected</th>
-                <th>Last Detected</th>
-            </tr>
-        </thead>
-
-        <tbody></tbody>
-    </table>
+        <table id="alerts_table">
+            <thead>
+                <tr>
+                    <th>Attack Type</th>
+                    <th>Source IP</th>
+                    <th>Activity Count</th>
+                    <th>Severity</th>
+                    <th>Last Detected</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </section>
 
     <script>
+        function updateClock() {
+            document.getElementById("clock").innerHTML =
+                new Date().toLocaleTimeString();
+        }
 
-    async function loadStats(){
+        updateClock();
+        setInterval(updateClock, 1000);
 
-        const response =
-            await fetch("/api/stats");
+        function severityBadge(level) {
 
-        const data =
-            await response.json();
+            if (!level)
+                return '<span class="badge low">UNKNOWN</span>';
 
-        document.getElementById(
-            "total_packets"
-        ).innerText =
-            data.total_packets;
+            level = level.toUpperCase();
 
-        document.getElementById(
-            "source_ips"
-        ).innerText =
-            data.source_ips;
+            if (level === "LOW")
+                return '<span class="badge low">LOW</span>';
 
-        document.getElementById(
-            "dest_ips"
-        ).innerText =
-            data.dest_ips;
+            if (level === "MEDIUM")
+                return '<span class="badge medium">MEDIUM</span>';
 
-        const tbody =
-            document.querySelector(
-                "#alerts_table tbody"
-            );
+            if (level === "HIGH")
+                return '<span class="badge high">HIGH</span>';
 
-        tbody.innerHTML = "";
+            if (level === "CRITICAL")
+                return '<span class="badge critical">CRITICAL</span>';
 
-        data.alerts.forEach(alert => {
+            return `<span class="badge low">${level}</span>`;
+        }
 
-            tbody.innerHTML += `
-            <tr>
-                <td>${alert.attack_type}</td>
-                <td>${alert.source_ip}</td>
-                <td>${alert.count}</td>
-                <td>${alert.severity}</td>
-                <td>${alert.first_seen}</td>
-                <td>${alert.last_seen}</td>
-            </tr>`;
-        });
-    }
+        async function loadStats() {
 
-    loadStats();
+            const response = await fetch("/api/stats");
+            const data = await response.json();
 
-    setInterval(
-        loadStats,
-        1000
-    );
+            document.getElementById("total_packets").innerText = data.total_packets;
+            document.getElementById("source_ips").innerText = data.source_ips;
+            document.getElementById("dest_ips").innerText = data.dest_ips;
 
+            const tbody = document.querySelector("#alerts_table tbody");
+            tbody.innerHTML = "";
+
+            data.alerts.forEach(alert => {
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${alert.attack_type}</td>
+                        <td>${alert.source_ip}</td>
+                        <td>${alert.count ?? "-"}</td>
+                        <td>${severityBadge(alert.severity)}</td>
+                        <td>
+                            ${new Date(alert.last_seen).toLocaleDateString()}
+                            <br>
+                            ${new Date(alert.last_seen).toLocaleTimeString()}
+                        </td>
+                    </tr>
+                `;
+
+            });
+        }
+        loadStats();
+        setInterval(loadStats, 1000);
     </script>
-
 </body>
 </html>

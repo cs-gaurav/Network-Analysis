@@ -1,6 +1,3 @@
-<!-- # Network-Analysis Tool
-Summer Internship Project For Cyber-Security -->
-
 # Network Traffic Monitoring and Attack Detection System
 
 A real-time Intrusion Detection System (IDS) developed using Python, Flask, Scapy, and SQLite. The system monitors network traffic, detects suspicious activities such as Port Scanning and Brute Force attacks, and displays alerts through a live dashboard.
@@ -12,7 +9,6 @@ A real-time Intrusion Detection System (IDS) developed using Python, Flask, Scap
 - Brute Force attack detection
 - Live web dashboard
 - SQLite database for traffic and alert storage
-- Protocol distribution monitoring
 - Active security incident tracking
 - Severity-based alert classification
 
@@ -58,7 +54,7 @@ Severity Levels:
 | timestamp | Packet timestamp |
 | source_ip | Source IP address |
 | destination_ip | Destination IP address |
-| protocol | TCP/UDP/ICMP/OTHER |
+| protocol | TCP/UDP/ICMP |
 
 ### alerts
 
@@ -69,12 +65,10 @@ Severity Levels:
 | count | Attack count |
 | severity | Risk level |
 | status | ACTIVE |
-| first_seen | First detection time |
-| last_seen | Most recent activity |
+| first_detected | First detection time |
+| last_detected | Most recent activity |
 
 ## Running the Project
-
-### Create Database
 
 ```bash
 python init_db.py

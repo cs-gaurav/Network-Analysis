@@ -1,4 +1,4 @@
-import requests
+import requests #to send http requests
 url = "http://127.0.0.1:8000"
 for i in range(15):
     requests.post(
